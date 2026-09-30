@@ -15,6 +15,10 @@ func handlerRegister(s *state, cmd command) error {
 		return fmt.Errorf("username required")
 	}
 
+	if handlerGetUser(s, cmd) == nil {
+		return fmt.Errorf("'%v' is already registered", cmd.args[0])
+	}
+
 	params := database.CreateUserParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now(),

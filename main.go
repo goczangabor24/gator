@@ -36,6 +36,9 @@ func main() {
 
 	validCommands.register("login", handlerLogin)
 	validCommands.register("register", handlerRegister)
+	validCommands.register("delete", handlerDelete)
+	validCommands.register("reset", handlerReset)
+	validCommands.register("users", handlerUsers)
 
 	args := os.Args[1:]
 
@@ -45,12 +48,21 @@ func main() {
 	}
 
 	var currentCommand command
-	currentCommand.name = args[0]
-	currentCommand.args = append(currentCommand.args, args[1])
 
+	if len(args) == 1 {
+		currentCommand.name = args[0]
+		currentCommand.args = append(currentCommand.args, "1") //placeholder for functions with only a name parameter
+	} else {
+		currentCommand.name = args[0]
+		currentCommand.args = append(currentCommand.args, args[1])
+	}
+
+	fmt.Println()
 	err = validCommands.run(&currentState, currentCommand)
+	fmt.Println()
 	if err != nil {
 		fmt.Println(err)
+		fmt.Println()
 		os.Exit(1)
 	}
 }
