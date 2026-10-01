@@ -39,6 +39,11 @@ func main() {
 	validCommands.register("delete", handlerDelete)
 	validCommands.register("reset", handlerReset)
 	validCommands.register("users", handlerUsers)
+	validCommands.register("agg", handlerAgg)
+	validCommands.register("addfeed", handlerAddFeed)
+	validCommands.register("feeds", handlerFeeds)
+	validCommands.register("follow", handlerFollow)
+	validCommands.register("following", handlerFollowing)
 
 	args := os.Args[1:]
 
@@ -49,12 +54,9 @@ func main() {
 
 	var currentCommand command
 
-	if len(args) == 1 {
-		currentCommand.name = args[0]
-		currentCommand.args = append(currentCommand.args, "1") //placeholder for functions with only a name parameter
-	} else {
-		currentCommand.name = args[0]
-		currentCommand.args = append(currentCommand.args, args[1])
+	currentCommand.name = args[0]
+	for _, arg := range args[1:] {
+		currentCommand.args = append(currentCommand.args, arg)
 	}
 
 	fmt.Println()
