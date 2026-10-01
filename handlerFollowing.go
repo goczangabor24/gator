@@ -3,20 +3,17 @@ package main
 import (
 	"context"
 	"fmt"
+
+	"github.com/goczangabor24/gator/internal/database"
 )
 
-func handlerFollowing(s *state, cmd command) error {
+func handlerFollowing(s *state, cmd command, user database.User) error {
 
 	if len(cmd.args) != 0 {
 		return fmt.Errorf("Error: Following command doesn't take arguments")
 	}
 
-	currentUser, err := s.db.GetUser(context.Background(), s.configData.CurrentUserName)
-	if err != nil {
-		return err
-	}
-
-	followedFeeds, err := s.db.GetFeedFollowsForUser(context.Background(), currentUser.ID)
+	followedFeeds, err := s.db.GetFeedFollowsForUser(context.Background(), user.ID)
 	if err != nil {
 		return err
 	}

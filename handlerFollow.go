@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func handlerFollow(s *state, cmd command) error {
+func handlerFollow(s *state, cmd command, user database.User) error {
 
 	if len(cmd.args) != 1 {
 		return fmt.Errorf("Error: Follow command only takes a 'url' argument")
@@ -22,16 +22,11 @@ func handlerFollow(s *state, cmd command) error {
 		return err
 	}
 
-	currentUser, err := s.db.GetUser(context.Background(), s.configData.CurrentUserName)
-	if err != nil {
-		return fmt.Errorf("Error: couldn't find current user: %w", err)
-	}
-
 	params := database.FeedFollowsParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-		UserID:    currentUser.ID,
+		UserID:    user.ID,
 		FeedID:    feedID,
 	}
 
@@ -41,7 +36,7 @@ func handlerFollow(s *state, cmd command) error {
 	}
 
 	fmt.Println(follow.FeedName)
-	fmt.Println(currentUser.Name)
+	fmt.Println(user.Name)
 
 	return nil
 }

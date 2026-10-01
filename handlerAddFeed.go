@@ -10,7 +10,7 @@ import (
 	"github.com/goczangabor24/gator/internal/database"
 )
 
-func handlerAddFeed(s *state, cmd command) error {
+func handlerAddFeed(s *state, cmd command, user database.User) error {
 
 	if len(cmd.args) != 2 {
 		return fmt.Errorf("Error: The addFeed function needs at least two parameters: name and url")
@@ -19,18 +19,13 @@ func handlerAddFeed(s *state, cmd command) error {
 	name := cmd.args[0]
 	url := cmd.args[1]
 
-	currentUser, err := s.db.GetUser(context.Background(), s.configData.CurrentUserName)
-	if err != nil {
-		return fmt.Errorf("Error: couldn't find current user: %w", err)
-	}
-
 	params := database.CreatedFeedParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Name:      name,
 		Url:       url,
-		UserID:    currentUser.ID,
+		UserID:    user.ID,
 	}
 
 	feed, err := s.db.CreatedFeed(context.Background(), params)
@@ -51,7 +46,7 @@ func handlerAddFeed(s *state, cmd command) error {
 		ID:        uuid.New(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-		UserID:    currentUser.ID,
+		UserID:    user.ID,
 		FeedID:    feedID,
 	}
 
@@ -61,7 +56,7 @@ func handlerAddFeed(s *state, cmd command) error {
 	}
 
 	fmt.Println(follow.FeedName)
-	fmt.Println(currentUser.Name)
+	fmt.Println(user.Name)
 
 	return nil
 }
