@@ -64,12 +64,25 @@ func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
 }
 
 func handlerAgg(s *state, cmd command) error {
+	if len(cmd.args) != 1 {
+		return fmt.Errorf("The 'agg' needs a time between requests interval, e.g.: 5s")
+	}
 
-	resp, err := fetchFeed(context.Background(), "https://www.wagslane.dev/index.xml")
+	interval := cmd.args[0]
+
+	timeBetweenReqs, err := time.ParseDuration(interval)
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("%+v\n", resp)
-	return nil
+	fmt.Printf("Collecting feeds every %.0f seconds\n\n", timeBetweenReqs.Seconds())
+
+	ticker := time.NewTicker(timeBetweenReqs)
+
+	for ; ; <-ticker.C {
+		err := scrapeFeeds(s)
+		if err != nil {
+			fmt.Printf("\n%s\n", err)
+		}
+	}
 }

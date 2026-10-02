@@ -9,7 +9,7 @@ import (
 
 func handlerUnfollow(s *state, cmd command, user database.User) error {
 	if len(cmd.args) != 1 {
-		fmt.Errorf("Error: Unfollow takes a single 'url' argument")
+		return fmt.Errorf("Error: Unfollow takes a single 'url' argument")
 	}
 
 	params := database.UnfollowParams{
