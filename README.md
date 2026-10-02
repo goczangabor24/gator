@@ -95,7 +95,7 @@ Browse posts
 
 Browse posts from followed feeds:
 
-./gator browse
+./gator browse <number of posts displayed>[optional, default = 2]
 
 Tech Stack
 
