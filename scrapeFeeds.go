@@ -4,6 +4,9 @@ import (
 	"context"
 	"fmt"
 	"time"
+
+	"github.com/goczangabor24/gator/internal/database"
+	"github.com/google/uuid"
 )
 
 func scrapeFeeds(s *state) error {
@@ -25,8 +28,22 @@ func scrapeFeeds(s *state) error {
 	}
 
 	for _, item := range fetchedFeed.Channel.Item {
-		fmt.Printf("%v\n\n", item.Title)
-		time.Sleep(200 * time.Millisecond)
+
+		params := database.CreatePostParams{
+			ID:          uuid.New(),
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
+			Title:       item.Title,
+			Url:         item.Link,
+			Description: item.Description,
+			PublishedAt: item.PubDate,
+			FeedID:      feed.ID,
+		}
+
+		_, err := s.db.CreatePost(context.Background(), params)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
